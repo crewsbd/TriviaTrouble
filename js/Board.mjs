@@ -127,6 +127,7 @@ export class Board {
         if(playersListElement.children[0].dataset.name != this.players[index].name) {
             this._shiftPlayers(index); 
         }
+        nameBadge.style.backgroundColor = this.players[index].color;
     }
 
     /**
