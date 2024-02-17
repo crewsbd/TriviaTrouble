@@ -13,6 +13,7 @@ font-family: 'Rubik Doodle Shadow', system-ui; */
 }
 * {
     /* border: 1px dotted pink; */
+    box-sizing: border-box;
 }
 html {
     height: 100vh;
@@ -27,7 +28,7 @@ body {
     grid-template-rows: max-content 1fr max-content;
     grid-template-columns: 1fr;
     justify-items: center; 
-    padding: 0;
+    /* padding: 2rem; */
     margin: 0;
     background-image: linear-gradient(var(--background1), var(--background2));
     background-repeat: no-repeat;
@@ -58,6 +59,7 @@ h1 {
     font-size: 3em;
     background-image: linear-gradient(var(--primary), var(--secondary));
     word-wrap: normal;
+    text-align: center;
 }
 h2 {
     color: rgba(240, 248, 255, 0);
@@ -72,6 +74,7 @@ h3 {
     background-image: linear-gradient(var(--primary), var(--secondary));
 }
 main {
+    width: 100%;
     background-color: rgba(98, 98, 98, 0.715);
     display: grid;
     grid-template-columns: min-content 1fr;
@@ -79,6 +82,12 @@ main {
     border-radius: 7px;
     box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.508) inset, 1px 1px 2px rgba(255, 255, 255, 0.359) inset;
 }
+/* General purpose states */
+.hidden {
+    display: none;
+}
+
+/* Layout */
 #players {
     grid-column: 1/2;
     display: flex;
@@ -137,6 +146,7 @@ main {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    position: relative;
 }
 #question input {
     transform: scale(1);
@@ -167,4 +177,177 @@ main {
 #hint input {
     padding: 10px;
     color: green;
+}
+.full-button {
+    padding: 1rem;
+    border-radius: .5rem;
+    border: 0;
+    margin: 0;
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.full-button:disabled {
+    color: rgba(255, 255, 255, 0.294);
+}
+
+
+
+/* Player select modal */
+.dark-blur {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.336);
+    backdrop-filter: blur(5px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+    z-index: 100;
+}
+.modal {
+    background-color: var(--background2);
+    background-image: linear-gradient(var(--background2), var(--background1));
+    width: 50vw;
+    height: 50vh;
+    margin: 0;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.427);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+.player-select-pane {
+    gap: .5rem;
+    display: grid;
+    grid-template-columns: 1fr 4rem 4rem;
+    background-color: rgba(0, 0, 0, 0);
+
+    width: 100%;
+    height: min-content;
+}
+.player-select-pane > * {
+    padding: .5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+.player-select-pane > *:first-child {
+    border-radius: .5rem 0 0 .5rem;
+}
+.player-select-pane > *:last-child {
+    border-radius: 0 .5rem .5rem 0;
+}
+
+.player-select-pane > * {
+    border: 0;
+    background-color: var(--secondary);
+    font-weight: bold;
+}
+#playerList {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+
+
+/* Custom select box styles */
+.select {
+    /* background-color: var(--primary); */
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 0;
+}
+
+.select .dropdown {
+    background-color: rgb(255, 255, 255);
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 4.5rem;
+    width: 100%;
+}
+.select-selected {
+    padding: 0;
+    height: 100%;
+}
+.clicked {
+    background-color: var(--pop);
+}
+.clicked .dropdown {
+    display: block;
+    width: 100%;
+    z-index: 20;
+    /* overflow-y: scroll; */
+}
+.dropdown .dropdown-option {
+    padding: 0;
+    z-index: 100;
+}
+.dropdown .dropdown-option img {
+    width: 100%;
+}
+#select-text {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+#select-text img {
+    width: 100%;
+    animation: wave .5s ease-in-out infinite alternate;
+}
+.swatch {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.avatar-image {
+    padding: .5rem;
+}
+
+
+
+/* Title wave */
+.wavy-text2 {
+    animation: wave2 4s linear infinite;
+}
+
+@keyframes wave {
+    0% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(5px);
+    }
+}
+
+@keyframes wave2 {
+    0% {
+        transform: skewY(2deg) translateY(0px);
+    }
+    25% {
+        transform: skewY(0deg) translateY(-10px);
+    }
+    50% {
+        transform: skewY(-2deg) translateY(0px);
+    }
+    75% {
+        transform: skewY(0deg) translateY(10px);
+    }
+    100% {
+        transform: skewY(2deg) translateY(0px);
+    }
+    
 }

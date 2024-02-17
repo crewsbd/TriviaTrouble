@@ -1,0 +1,26 @@
+[
+    {
+        "name": "dog",
+        "file": "dog.svg"
+    },
+    {
+        "name": "cat",
+        "file": "cat.svg"
+    },
+    {
+        "name": "flower",
+        "file": "flower.svg"
+    },
+    {
+        "name": "die",
+        "file": "die.svg"
+    },
+    {
+        "name": "smiley",
+        "file": "smiley.svg"
+    },
+    {
+        "name": "car",
+        "file": "car.svg"
+    }
+]

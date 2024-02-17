@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Trouble?</title>
+    <script src="./js/game.js" type="module"></script>
+    <script type="module">
+        import {clickSelect, clickOption} from './js/utils.mjs';
+        document.clickSelect = clickSelect;
+        document.clickOption = clickOption;
+    </script>
+    <link href="./images//logo.svg" rel="icon">
+    <link href="./styles/base.css" rel="stylesheet">
+    <link href="./styles/large.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <template id="playerSelectModal">
+        <div id="outterModal" class="dark-blur">
+            <div id="innerModal" class="modal">
+                <h2>PLAYER SELECT</h2>
+                <div id="playerList">
+                <!-- ADD DIVs OF CLASS player-select-pane HERE -->
+                </div>
+                <input id="addPlayerButton" class="full-button" type="button" value="+">
+                <input id="playButton" class="full-button" type="button" value="PLAY" disabled>
+            </div>
+        </div>
+    </template>
+    <template id="player-pane">
+        <div class="player-select-pane">
+            <input id="name-input" type="text" list="player-names" placeholder="Name" >
+            <datalist id="player-names">
+                <!-- ADD OPTION ELEMENTS -->
+            </datalist>
+            <div id="color-select" class="select">
+                <div class="select-selected" onclick="clickSelect(this)">
+                    <div id="select-text"><div class="swatch" style="background-color: red;">RED</div></div>
+                </div>
+                <div class="dropdown">
+                    <!-- ADD DIVs FOR EACH COLOR WITH THE FOLLOWING PATTERN-->
+                    <!-- <div class="dropdown-option" onclick="clickOption(this, 'red')"><div class="swatch" style="background-color: red;">RED</div></div> -->
+                </div>
+            </div>
+            <div id="avatar-select" class="select">
+                <div class="select-selected" onclick="clickSelect(this)">
+                    <!-- ADD A DEFAULT WITH THE FOLLOWING PATTERNS -->
+                    <!-- <div id="select-text"><img class="avatar-image"  src="./images/avatars/cat.svg"></div> -->
+                </div>
+                <div class="dropdown">
+                    <!-- ADD DIVs FOR AVATAR IMAGES WITH THE FOLLOWING PATTERN -->
+                    <!-- <div class="dropdown-option" onclick="clickOption(this, 'cat')"><img class="avatar-image" src="./images/avatars/cat.svg"></div> -->
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+    <header>
+        <img src="./images/logo.svg">
+        <h1 class="wavy-text2">TRIVIA TROUBLE?</h1>
+    </header>
+    <main>
+        <section id="players">
+            <!-- Player tokens go here -->
+        </section>
+        <section id="board">
+            <div id="player_name">Brian Crews 1,234 pts</div>
+            <div id="question_config">
+                <select>
+                    <option>Easy X1</option>
+                    <option>Medium X2</option>
+                    <option>Hard X3</option>
+                </select>
+                <select id="categories">
+                </select>
+            </div>
+            <div id="question">
+                <div id="question_text" class="hidden">&nbsp;</div>
+            </div>
+            <div id="hint">
+                <input type="button" value="HINT -3pt">
+            </div>
+            <input id="test_next_player" type="button" value="TEST NEXT PLAYER">
+        </section>
+    </main>
+    <footer>
+        <h3>&copy;2024 Brian Crews</h3>
+    </footer>
+</body>
+</html>

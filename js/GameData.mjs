@@ -1,3 +1,5 @@
+import {Player} from './Player.mjs';
+
 /**
  * A class to interface with the triva api
  */
@@ -9,10 +11,25 @@ export class GameData {
     this.apiURL = "https://opentdb.com";
     this._init();
   }
+
+  getGameState() {
+    const stateString = localStorage.getItem('gameState');
+    if(stateString) {
+      return JSON.parse(stateString);
+    }
+    else {
+      return null;
+    }
+  }
+
+  saveGameState(gameState) {
+    localStorage.setItem('gameState', JSON.stringify(gameState));
+  }
+
   /**
    * Returns a triva question data object
-   * @param {String} difficulty 
-   * @param {number} category 
+   * @param {String} difficulty
+   * @param {number} category
    * @returns Array<object>
    */
   async getQuestion(difficulty, category) {
@@ -20,7 +37,7 @@ export class GameData {
     //console.log(queryURL);
     const result = await fetch(queryURL);
     const data = await result.json();
-    
+
     return data;
   }
   async getCategories() {
@@ -31,10 +48,74 @@ export class GameData {
     // console.log(data);
     return data;
   }
-  async resetToken() {
-    await fetch(`${this.apiURL}/api_token.php?command=reset&token=${this.token}`);
-  }
   
+  async resetToken() {
+    await fetch(
+      `${this.apiURL}/api_token.php?command=reset&token=${this.token}`
+    );
+  }
+
+  async getPlayers() {
+    /** @type {string} */
+    const players = localStorage.getItem("players");
+    if (players) {
+      /** @type {Array<Object>} */
+      const playerArray = JSON.parse(players);
+      return playerArray.map((player) => new Player(player));
+      //return playerArray; // Returns
+    } else {
+      localStorage.setItem("players", []);
+      return [];
+    }
+  }
+
+  /**
+   *
+   * @param {Player} player
+   */
+  async savePlayer(player) {
+    /**@type {Array<Player>} */
+    const players = await this.getPlayers();
+    const index = players.findIndex((item) => {
+      if (item.name == player.name) {
+        return true;
+      }
+      return false;
+    });
+
+    if (index > -1) {
+      players[index] = player;
+    } else {
+      players.push(player);
+    }
+    console.log(players);
+    localStorage.setItem("players", JSON.stringify(players));
+  }
+
+  async getAvatars() {
+    
+    const result = await fetch('../json/avatars.json');
+    if(result.ok) {
+      const json = await result.json();
+      return json;
+    }
+    else {
+      return null;
+    }
+  }
+
+  async getColors() {
+    
+    const result = await fetch('../json/colors.json');
+    if(result.ok) {
+      const json = await result.json();
+      return json;
+    }
+    else {
+      return null;
+    }
+  }
+
 
   async _init() {
     console.log("init");
@@ -65,6 +146,7 @@ export class GameData {
 
     this._updateTokenExpiration();
   }
+
   _tokenValid() {
     const token = localStorage.getItem("tokenExpires");
     if (token) {

@@ -1,8 +1,22 @@
 @media screen and (min-width: 570px) {
+    body {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
     header {
         display: flex;
         flex-direction: row;
         gap: 1rem;
+    }
+    main {
+        max-width: 900px;
+    }
+    div#question_config {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    div#question_config>* {
+        margin-right: 0;
     }
 
 }
