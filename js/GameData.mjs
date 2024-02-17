@@ -48,7 +48,7 @@ export class GameData {
     // console.log(data);
     return data;
   }
-  
+
   async resetToken() {
     await fetch(
       `${this.apiURL}/api_token.php?command=reset&token=${this.token}`
@@ -94,7 +94,7 @@ export class GameData {
 
   async getAvatars() {
     
-    const result = await fetch('../json/avatars.json');
+    const result = await fetch('/json/avatars.json');
     if(result.ok) {
       const json = await result.json();
       return json;
@@ -106,7 +106,7 @@ export class GameData {
 
   async getColors() {
     
-    const result = await fetch('../json/colors.json');
+    const result = await fetch('/json/colors.json');
     if(result.ok) {
       const json = await result.json();
       return json;
