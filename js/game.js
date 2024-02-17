@@ -9,7 +9,7 @@ const gameState = gameData.getGameState();
 
 const board = new Board(gameState, gameData)
 
-board.runGame();
+// board.runGame();
 
 
 // board.populateCategories(gameData);

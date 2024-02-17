@@ -12,6 +12,7 @@ export class Board {
      * @param {GameData} gameData 
      */
     constructor(gameState, gameData) {
+        console.log(gameState);
         if(gameState) { // A game state has been passed, load it
             this.gameData = gameData;
             /**@type {Array<Player>} */
