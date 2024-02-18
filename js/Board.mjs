@@ -329,15 +329,18 @@ export class Board {
                 {
                     transform: `translate(0px, 0px) scale(${scale})`,
                     boxShadow: '0 5px 15px #0005',
-                    zIndex: `${scale * 10}`
+                    zIndex: `${scale * 10}`,
+                    borderRadius: '1rem'
                 },
                 {
                     transform: `translate(${dx}px, ${dy}px) scale(${scale})`,
                     boxShadow: '0 5px 15px #0005',
-                    zIndex: `${scale * 10}`
+                    zIndex: `${scale * 10}`,
+                    borderRadius: '1rem'
                 },
                 {
-                    transform: `translate(${dx}px, ${dy}px) scale(1)`
+                    transform: `translate(${dx}px, ${dy}px) scale(1)`,
+                    borderRadius: '1rem'
                 }
             ],
             {

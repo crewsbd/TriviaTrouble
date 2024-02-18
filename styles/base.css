@@ -104,12 +104,13 @@ main {
     width: 75px;
     box-sizing: border-box;
     aspect-ratio: 1/1;
-    padding: .5em;
-    border-radius: .5em;
+    padding: .5rem;
+    border-radius: 1rem;
     color:white;
 }
 #players div:nth-child(1) {
-    border-radius: 1em 0 0 1em;
+    border-radius: 1rem 0 0 1rem;
+    transition: border-radius 1s;
 }
 #board {
     grid-column: 2/3;
@@ -119,7 +120,7 @@ main {
     gap: 1em;
 }
 #player_name {
-    background-color: red;
+    background-color: rgb(136, 136, 136);
     box-sizing: border-box;
     height: 75px;
     display: flex;
@@ -130,7 +131,7 @@ main {
     border-radius: 0 1em 1em 0;
     font-size: 15pt;
     font-weight: bold;
-    text-shadow: 0 2px 2px rgb(255, 255, 255);
+    text-shadow: 0 0 10px rgb(255, 255, 255), 0 1px 1px rgb(255, 255, 255);
 }
 #question_config {
     display: flex;

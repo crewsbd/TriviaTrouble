@@ -1,15 +1,15 @@
 [
     {
         "name": "red",
-        "color": "red"
+        "color": "#f33"
     },
     {
         "name": "green",
-        "color": "green"
+        "color": "#8f8"
     },
     {
         "name": "blue",
-        "color": "blue"
+        "color": "#7bf"
     },
     {
         "name": "yellow",
@@ -21,6 +21,6 @@
     },
     {
         "name": "purple",
-        "color": "purple"
+        "color": "#c9f"
     }
 ]
