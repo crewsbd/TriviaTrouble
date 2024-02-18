@@ -70,10 +70,10 @@
         <section id="board">
             <div id="player_name">Brian Crews 1,234 pts</div>
             <div id="question_config">
-                <select>
-                    <option>Easy X1</option>
-                    <option>Medium X2</option>
-                    <option>Hard X3</option>
+                <select id="difficulty">
+                    <option value="easy">Easy X1</option>
+                    <option value="medium">Medium X2</option>
+                    <option value="hard">Hard X3</option>
                 </select>
                 <select id="categories">
                 </select>
@@ -81,10 +81,10 @@
             <div id="question">
                 <div id="question_text" class="hidden">&nbsp;</div>
             </div>
-            <div id="hint">
-                <input type="button" value="HINT -3pt">
-            </div>
-            <input id="test_next_player" type="button" value="TEST NEXT PLAYER">
+    
+            <input id="hint" class="full-button" type="button" value="HINT -3pt">
+
+            <input class="full-button" id="test_next_player" type="button" value="TEST NEXT PLAYER">
         </section>
     </main>
     <footer>

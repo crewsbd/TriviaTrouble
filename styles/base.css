@@ -95,7 +95,8 @@ main {
     gap: 1em;
     padding: 1em;
 }
-#players div {
+#players > div {
+    position: relative;
     display: flex;
     align-items: center;
     font-size: 1.2em;
@@ -107,6 +108,21 @@ main {
     padding: .5rem;
     border-radius: 1rem;
     color:white;
+}
+#players div.score-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -5%;
+    right: -5%;
+    background-color: white;
+    color: black;
+    border: 2px solid rgba(0, 0, 0, 0.409);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    /* box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.341); */
 }
 #players div:nth-child(1) {
     border-radius: 1rem 0 0 1rem;
@@ -165,6 +181,8 @@ main {
 #question input {
     padding: 10px;
     border-radius: 10px;
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 #question input.incorrect {
     color: rgb(156, 183, 193);

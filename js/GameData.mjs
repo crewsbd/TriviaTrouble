@@ -33,7 +33,14 @@ export class GameData {
    * @returns Array<object>
    */
   async getQuestion(difficulty, category) {
-    const queryURL = `${this.apiURL}/api.php?category=${category}&difficulty=${difficulty}&amount=1&type=multiple`;
+    let queryURL = '';
+    console.log(await this.getSetting('dev'));
+    if(await this.getSetting('dev')) {
+      queryURL = 'json/test-question.json';
+    }
+    else {
+      queryURL = `${this.apiURL}/api.php?category=${category}&difficulty=${difficulty}&amount=1&type=multiple`;
+    }
     //console.log(queryURL);
     const result = await fetch(queryURL);
     const data = await result.json();
@@ -41,7 +48,14 @@ export class GameData {
     return data;
   }
   async getCategories() {
-    const queryURL = `${this.apiURL}/api_category.php`;
+    let queryURL = '';
+    console.log(await this.getSetting('dev'));
+    if(await this.getSetting('dev')) {
+      queryURL = 'json/test-categories.json';
+    }
+    else {
+      queryURL = `${this.apiURL}/api_category.php`;
+    }
     const result = await fetch(queryURL);
     // console.log(result);
     const data = await result.json();
@@ -114,6 +128,22 @@ export class GameData {
     else {
       return null;
     }
+  }
+
+  async getSetting(key) {
+    console.log('GET SETTING');
+    const settings = await fetch('json/settings.json');
+    console.log(settings);
+    if(settings.ok) {
+      const json = await settings.json();
+      console.log(json);
+      if(key in json) {
+        console.log('Key is present');
+        console.log(json[key]);
+        return json[key];
+      }
+    }
+    return null;
   }
 
 

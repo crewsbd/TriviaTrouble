@@ -13,6 +13,7 @@ export class Board {
      */
     constructor(gameState, gameData) {
         console.log(gameState);
+        this._init(gameData);
         if(gameState) { // A game state has been passed, load it
             this.gameData = gameData;
             /**@type {Array<Player>} */
@@ -26,6 +27,7 @@ export class Board {
         }
         else { // Open the new game modal to start a new game
             this.gameData = gameData;
+            /**@type {Array<Player>} */
             this.players = [];
             this.round = 0;
             this.maxRounds = 5;
@@ -35,14 +37,20 @@ export class Board {
             this.showPlayerSelect();
         }
     }
-    _init() {
-
+    /**
+     * Async constructor stuff
+     */
+    async _init(gameData) {
+        console.log('BOARD INIT');
+        this.categories = await gameData.getCategories();
+        console.log(this.categories);
     } 
 
-    runGame() {
+    async runGame() {
         console.log('---RUN GAME---');
         //Start new game. Load and display players.
         const playerSection = document.querySelector('#players');
+        // Set up each player
         for(let index = 0; index < this.players.length; index++) {
             let newPlayer = document.createElement('div');
             newPlayer.dataset.name = this.players[index].name; // Put the name in for later display
@@ -52,7 +60,12 @@ export class Board {
             newImg.src = `./images/avatars/${this.players[index].avatar}.svg`;
             newImg.width = 40;
             newImg.height = 40;
+            let scoreBadge = document.createElement('div');
+            scoreBadge.classList.add('score-badge')
+            scoreBadge.innerHTML = '0';
+
             newPlayer.insertAdjacentElement('afterbegin', newImg);
+            newPlayer.insertAdjacentElement('beforeend', scoreBadge);
             playerSection.insertAdjacentElement('beforeend', newPlayer);
         }
 
@@ -61,43 +74,41 @@ export class Board {
 
         //Load categories
         // this.populateCategories(this.gameData.getCategories);
-        this.populateCategories({
-          trivia_categories: [
-            {
-              id: 9,
-              name: "Test category1",
-            },
-            {
-              id: 10,
-              name: "Test category2",
-            },
-          ],
-        });
+        
+        this.populateCategories(this.categories);
         
         //Set up "load question" button
-        const questionElement = document.querySelector('#question');
-        const generateQuestionButton = document.createElement('input');
-        const questionText = document.querySelector('#question_text');
-        generateQuestionButton.value = "Generate Question";
-        generateQuestionButton.type = 'button';
-        generateQuestionButton.addEventListener('click', () => {
-            console.log('GENERATE QUESTION');
-            // Load the question
-
-            // Show it
-            questionText.classList.remove('hidden');
-            // Delete self
-            generateQuestionButton.remove();
-        })
-        questionElement.insertAdjacentElement('afterbegin', generateQuestionButton);
+        this.resetPlayArea();
+        // const questionElement = document.querySelector('#question');
+        // const generateQuestionButton = document.createElement('input');
+        // const questionText = document.querySelector('#question_text');
+        // generateQuestionButton.value = "Generate Question";
+        // generateQuestionButton.type = 'button';
+        // generateQuestionButton.id = 'generateQuestion';
+        // generateQuestionButton.classList.add('full-button');
+        // generateQuestionButton.addEventListener('click', async () => {
+        //     console.log('GENERATE QUESTION');
+        //     // Load the question
+        //     this.populateQuestion(await this.gameData.getQuestion('easy', 1));
+            
+        //     // Show it
+        //     questionText.classList.remove('hidden');
+        //     // Delete self
+        //     generateQuestionButton.remove();
+        // })
+        // questionElement.insertAdjacentElement('afterbegin', generateQuestionButton);
 
 
         //After this, the game should run itself with events.
 
         // Add handler for test next player. REmvoe in production
-        document.querySelector('#test_next_player').addEventListener('click', () => {
-            this.nextPlayer();
-        })
+        if (this.gameData.getSetting("dev")) {
+          document
+            .querySelector("#test_next_player")
+            .addEventListener("click", () => {
+              this.nextPlayer();
+            });
+        }
     }
 
     endGame() {
@@ -108,9 +119,51 @@ export class Board {
 
         // Run showPlayerSelect
     }
+    // nextPlayer() {
+    //     this.currentPlayer = (this.currentPlayer+1) % this.players.length;
+    //     this.stagePlayer(this.currentPlayer);
+    // }
+
     nextPlayer() {
-        this.currentPlayer = (this.currentPlayer+1) % this.players.length;
+        this.currentPlayer++;
+        if(this.currentPlayer >= this.players.length) {
+            this.round++
+            this.currentPlayer = 0
+        }
         this.stagePlayer(this.currentPlayer);
+        this.resetPlayArea();
+    }
+    resetPlayArea() {
+        this.populateCategories(this.categories);
+        
+        //Set up "load question" button
+        const questionElement = document.querySelector('#question');
+        const generateQuestionButton = document.createElement('input');
+        const questionText = document.querySelector('#question_text');
+        generateQuestionButton.value = "Generate Question";
+        generateQuestionButton.type = 'button';
+        generateQuestionButton.id = 'generateQuestion';
+        generateQuestionButton.classList.add('full-button');
+        questionText.classList.add('hidden');
+        generateQuestionButton.addEventListener('click', async () => {
+            console.log('GENERATE QUESTION');
+            // Load the question
+            const difficulty = document.querySelector('#difficulty');
+            const category = document.querySelector('#categories');
+            this.populateQuestion(await this.gameData.getQuestion(difficulty.value, category.value));
+            
+            // Show it
+            questionText.classList.remove('hidden');
+            // Delete self
+            generateQuestionButton.remove();
+        })
+        questionElement.insertAdjacentElement('afterbegin', generateQuestionButton);
+
+        // Remove old answers
+        const oldAnswers = document.querySelectorAll('.answerOption');
+        oldAnswers.forEach((element) => element.remove());
+
+
     }
 
     stagePlayer(index) {
@@ -172,9 +225,9 @@ export class Board {
             
             document.querySelector("#playButton").disabled = false;
             const newPlayer = new Player({
-              name: "blank",
+              name: `blank${this.players.length}`,
               color: "red",
-              avatar: "cat",
+              avatar: "car",
               highScore: 0,
             });
             this.players.push(newPlayer);
@@ -212,6 +265,9 @@ export class Board {
         const newDefault = document.createElement('div');
         const newDefaultImg = document.createElement('img')
         newDefault.id = 'select-text';
+        newDefaultImg.classList.add('avatar-image');
+        playerInstance.avatar = avatars[0].name;
+        playerInstance.color = colors[0].color;
         newDefaultImg.src =`./images/avatars/${avatars[0].file}`;
         newDefault.insertAdjacentElement('afterbegin', newDefaultImg);
         avatarSelect.querySelector('.select-selected').insertAdjacentElement('afterbegin', newDefault);
@@ -289,10 +345,9 @@ export class Board {
         this.answers.splice(this.correctIndex, 0, this.correct);
 
         for(let index = 0; index < this.answers.length; index++) {
-
-        // for(let answer of this.answers) {
             const answerButton = document.createElement('input');
             answerButton.type = 'button';
+            answerButton.classList.add('answerOption');
             // answerButton.value = answer;
             answerButton.value = this.answers[index];
             questionElement.insertAdjacentElement('beforeend', answerButton);
