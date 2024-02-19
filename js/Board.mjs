@@ -28,6 +28,7 @@ export class Board {
             this.questionValue = gameState.questionValue;
             this.categories = gameState.categories;
             this.gameData.saveGameState(this);
+            this.gameOver = gameState.gameOver;
             this.runGame()
         }
         else { // Open the new game modal to start a new game
@@ -43,6 +44,7 @@ export class Board {
             this.correctIndex = 0;
             this.questionValue = 1;
             this.categories = [];
+            this.gameOver = false;
             // this.gameData.saveGameState(this);
             this.showPlayerSelect();
         }
@@ -59,6 +61,7 @@ export class Board {
     async runGame() {
         console.log('---RUN GAME---');
         //Start new game. Load and display players.
+        this.gameOver = false;
         const playerSection = document.querySelector('#players');
         // Set up each player
         for(let index = 0; index < this.players.length; index++) {
@@ -117,31 +120,36 @@ export class Board {
         
         // Clear localStorage game data.
         localStorage.removeItem('gameState');
+        this.gameOver = true;
+        this.clearPlayers();
 
         // Run showPlayerSelect
         this.showPlayerSelect();
     }
-    // nextPlayer() {
-    //     this.currentPlayer = (this.currentPlayer+1) % this.players.length;
-    //     this.stagePlayer(this.currentPlayer);
-    // }
+
+    clearPlayers() {
+        for(let index = 0; index < this.players.length; index++) {
+            document.querySelector(`#p${index}badge`).remove();
+            
+        }
+        this.players = [];
+    }
 
     nextPlayer() {
-        this.currentPlayer++;
-        if(this.currentPlayer >= this.players.length) {
-            this.round++
-            this.currentPlayer = 0
-        }
-        if(this.round > this.maxRounds) {
+          this.currentPlayer++;
+
+          if (this.currentPlayer >= this.players.length) {
+            this.round++;
+            this.currentPlayer = 0;
+          }
+          if (this.round > this.maxRounds) {
             this.endGame();
-        }
-        else {
+          } else {
             this.updateScores();
             this.stagePlayer(this.currentPlayer);
             this.resetPlayArea();
-        }
-        // Many changes, save them
-        this.gameData.saveGameState(this);
+            this.gameData.saveGameState(this);
+          }
     }
 
     updateScores() {
@@ -375,7 +383,7 @@ export class Board {
             const answerButton = document.createElement('input');
             answerButton.type = 'button';
             answerButton.classList.add('answerOption');
-            answerButton.value = this.answers[index];
+            answerButton.value = decodeEntities(this.answers[index]);
             questionElement.insertAdjacentElement('beforeend', answerButton);
             answerButton.addEventListener('click', () => this.answerButtonHandler(index));
         }
