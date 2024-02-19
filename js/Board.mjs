@@ -22,6 +22,11 @@ export class Board {
             this.round = gameState.round;
             this.maxRounds = gameState.maxRounds;
             this.currentPlayer = gameState.currentPlayer;
+            this.answers = gameState.currentQuestions;
+            this.correct = gameState.correct;
+            this.correctIndex = gameState.correctIndex;
+            this.questionValue = gameState.questionValue;
+            this.categories = gameState.categories;
             this.gameData.saveGameState(this);
             this.runGame()
         }
@@ -29,10 +34,15 @@ export class Board {
             this.gameData = gameData;
             /**@type {Array<Player>} */
             this.players = [];
-            this.round = 0;
+            this.round = 1;
             this.maxRounds = 5;
             this.currentPlayer = 0;
             this.currentScores = [];
+            this.answers = [];
+            this.correct = '';
+            this.correctIndex = 0;
+            this.questionValue = 1;
+            this.categories = [];
             // this.gameData.saveGameState(this);
             this.showPlayerSelect();
         }
@@ -62,7 +72,7 @@ export class Board {
             newImg.height = 40;
             let scoreBadge = document.createElement('div');
             scoreBadge.classList.add('score-badge')
-            this.currentScores[index] = 0;
+            //this.currentScores[index] = 0;
             scoreBadge.innerHTML = this.currentScores[index];
 
             newPlayer.insertAdjacentElement('afterbegin', newImg);
@@ -71,7 +81,7 @@ export class Board {
         }
 
         // Stage the first player.
-        this.stagePlayer(0);
+        this.stagePlayer(this.currentPlayer);
 
         //Load categories
         // this.populateCategories(this.gameData.getCategories);
@@ -80,6 +90,9 @@ export class Board {
         
         //Set up "load question" button
         this.resetPlayArea();
+
+        // Game is ready to play, so save in in case the browser gets refreshed
+        this.gameData.saveGameState(this);
        
         //After this, the game should run itself with events.
 
@@ -96,10 +109,17 @@ export class Board {
     endGame() {
         console.log('---END GAME---');
         // Display end game modal
-
+        const victory = getTemplateInstance('victoryMessage');
+        victory.querySelector('#okButton').addEventListener('click', () => {
+            victory.remove();
+        })
+        document.querySelector('body').insertAdjacentElement('afterbegin', victory );
+        
         // Clear localStorage game data.
+        localStorage.removeItem('gameState');
 
         // Run showPlayerSelect
+        this.showPlayerSelect();
     }
     // nextPlayer() {
     //     this.currentPlayer = (this.currentPlayer+1) % this.players.length;
@@ -112,9 +132,16 @@ export class Board {
             this.round++
             this.currentPlayer = 0
         }
-        this.updateScores();
-        this.stagePlayer(this.currentPlayer);
-        this.resetPlayArea();
+        if(this.round > this.maxRounds) {
+            this.endGame();
+        }
+        else {
+            this.updateScores();
+            this.stagePlayer(this.currentPlayer);
+            this.resetPlayArea();
+        }
+        // Many changes, save them
+        this.gameData.saveGameState(this);
     }
 
     updateScores() {
@@ -133,6 +160,7 @@ export class Board {
         const questionElement = document.querySelector('#question');
         const generateQuestionButton = document.createElement('input');
         const questionText = document.querySelector('#question_text');
+        const roundCounter = document.querySelector('#currentRound');
 
         // Configure generate question button
         generateQuestionButton.value = "Generate Question";
@@ -153,6 +181,7 @@ export class Board {
             generateQuestionButton.remove();
         })
         questionElement.insertAdjacentElement('afterbegin', generateQuestionButton);
+        roundCounter.innerHTML = this.round;
 
         // Remove old answers
         const oldAnswers = document.querySelectorAll('.answerOption');
@@ -251,6 +280,8 @@ export class Board {
         const colorSelect = newPane.querySelector('#color-select');
         const colorDrop = colorSelect.querySelector('.dropdown');
 
+        this.currentScores.push(0);
+
         // Update the player name when it's changed.
         nameInput.addEventListener('input', () => {
             playerInstance.name = nameInput.value;
@@ -344,7 +375,6 @@ export class Board {
             const answerButton = document.createElement('input');
             answerButton.type = 'button';
             answerButton.classList.add('answerOption');
-            // answerButton.value = answer;
             answerButton.value = this.answers[index];
             questionElement.insertAdjacentElement('beforeend', answerButton);
             answerButton.addEventListener('click', () => this.answerButtonHandler(index));
@@ -353,25 +383,27 @@ export class Board {
 
     async answerButtonHandler(answerIndex) {
         console.log(`You pushed button ${answerIndex} with a value of ${this.answers[answerIndex]}`);
-        if(this.answers[answerIndex] == this.correct) {
+        // Display a message for correct answers
+        if(answerIndex == this.correctIndex) {
             // console.log(`CORRECT!`);
             const correctModal = getTemplateInstance('correctMessage');
+            correctModal.querySelector('#winnerName').innerHTML = this.players[this.currentPlayer].name;
+            correctModal.querySelector('#scoredPoints').innerHTML = this.questionValue;
             correctModal.querySelector('#okButton').addEventListener('click', () => {
                 correctModal.remove();
             })
             document.querySelector('body').insertAdjacentElement('afterbegin', correctModal);
-            
-            this.currentScores[this.currentPlayer] += 1;
-            // Display message 
+            this.currentScores[this.currentPlayer] += this.questionValue;
         }
+        // Display an answer for incorrect answers
         else {
             // Display wrong answer message
-            const incorrectModal = getTemplateInstance('incorrectMessage')
+            const incorrectModal = getTemplateInstance('incorrectMessage');
+            incorrectModal.querySelector('#correctAnswer').innerHTML = this.correct;
             incorrectModal.querySelector('#okButton').addEventListener('click', () => {
                 incorrectModal.remove();
             })
             document.querySelector('body').insertAdjacentElement('afterbegin', incorrectModal);
-
         }
         //this.resetPlayArea();
         this.nextPlayer();

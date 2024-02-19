@@ -31,7 +31,7 @@
     <template id="correctMessage">
         <div id="outterModal" class="dark-blur">
             <div id="innerModal" class="modal-box" style="justify-content: space-between;">
-                <h2>CORRECT! <span id="winnerName"></span>!</h2>
+                <h2>CORRECT <span id="winnerName"></span>!</h2>
                 <div class="light-text">You earned <span id="scoredPoints"></span> points.</div>
                 
                 <input id="okButton" type="button" value="OK" class="full-button">
@@ -42,7 +42,7 @@
         <div id="outterModal" class="dark-blur">
             <div id="innerModal" class="modal-box" style="justify-content: space-between;">
                 <h2>SORRY. WRONG ANSWER.</h2>
-                <div class="light-text">The correct answer was <span id="correctAnswer"></span>.</div>
+                <div class="light-text">The correct answer was &quot;<span id="correctAnswer"></span>&quot.</div>
                 
                 <input id="okButton" type="button" value="OK" class="full-button">
             </div>
@@ -111,6 +111,7 @@
                 </select>
             </div>
             <div id="question">
+                <input type="button" class="full-button" value="Generate Question">
                 <div id="question_text" class="hidden">&nbsp;</div>
             </div>
     
