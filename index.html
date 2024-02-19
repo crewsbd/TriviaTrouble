@@ -18,6 +18,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&family=Rubik:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+    <template id="victoryMessage">
+        <div id="outterModal" class="dark-blur">
+            <div id="innerModal" class="modal-box" style="justify-content: space-between;">
+                <h2>CONGRATULATION <span id="winnerName"></span>!</h2>
+                <div class="light-text">You won with <span id="winnerPoints"></span> points.</div>
+                
+                <input id="okButton" type="button" value="OK" class="full-button">
+            </div>
+        </div>
+    </template>
+    <template id="correctMessage">
+        <div id="outterModal" class="dark-blur">
+            <div id="innerModal" class="modal-box" style="justify-content: space-between;">
+                <h2>CORRECT! <span id="winnerName"></span>!</h2>
+                <div class="light-text">You earned <span id="scoredPoints"></span> points.</div>
+                
+                <input id="okButton" type="button" value="OK" class="full-button">
+            </div>
+        </div>
+    </template>
+    <template id="incorrectMessage">
+        <div id="outterModal" class="dark-blur">
+            <div id="innerModal" class="modal-box" style="justify-content: space-between;">
+                <h2>SORRY. WRONG ANSWER.</h2>
+                <div class="light-text">The correct answer was <span id="correctAnswer"></span>.</div>
+                
+                <input id="okButton" type="button" value="OK" class="full-button">
+            </div>
+        </div>
+    </template>
     <template id="playerSelectModal">
         <div id="outterModal" class="dark-blur">
             <div id="innerModal" class="modal">
@@ -68,7 +98,9 @@
             <!-- Player tokens go here -->
         </section>
         <section id="board">
-            <div id="player_name">Brian Crews 1,234 pts</div>
+            <div id="player_name">Brian Crews 1,234 pts
+            </div>
+            <div id="roundIndicator"><h3>Round: </h3><span id="currentRound">0</span></div>
             <div id="question_config">
                 <select id="difficulty">
                     <option value="easy">Easy X1</option>
@@ -84,7 +116,7 @@
     
             <input id="hint" class="full-button" type="button" value="HINT -3pt">
 
-            <input class="full-button" id="test_next_player" type="button" value="TEST NEXT PLAYER">
+            <!-- <input class="full-button" id="test_next_player" type="button" value="TEST NEXT PLAYER"> -->
         </section>
     </main>
     <footer>

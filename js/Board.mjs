@@ -1,6 +1,6 @@
 import { GameData } from './GameData.mjs';
 import { Player } from './Player.mjs';
-import { clickOption, clickSelect, decodeEntities } from './utils.mjs';
+import { clickOption, clickSelect, decodeEntities, getTemplateInstance, flyToElement } from './utils.mjs';
 
 /**
  * Class to manage the game state
@@ -62,7 +62,8 @@ export class Board {
             newImg.height = 40;
             let scoreBadge = document.createElement('div');
             scoreBadge.classList.add('score-badge')
-            scoreBadge.innerHTML = '0';
+            this.currentScores[index] = 0;
+            scoreBadge.innerHTML = this.currentScores[index];
 
             newPlayer.insertAdjacentElement('afterbegin', newImg);
             newPlayer.insertAdjacentElement('beforeend', scoreBadge);
@@ -79,26 +80,7 @@ export class Board {
         
         //Set up "load question" button
         this.resetPlayArea();
-        // const questionElement = document.querySelector('#question');
-        // const generateQuestionButton = document.createElement('input');
-        // const questionText = document.querySelector('#question_text');
-        // generateQuestionButton.value = "Generate Question";
-        // generateQuestionButton.type = 'button';
-        // generateQuestionButton.id = 'generateQuestion';
-        // generateQuestionButton.classList.add('full-button');
-        // generateQuestionButton.addEventListener('click', async () => {
-        //     console.log('GENERATE QUESTION');
-        //     // Load the question
-        //     this.populateQuestion(await this.gameData.getQuestion('easy', 1));
-            
-        //     // Show it
-        //     questionText.classList.remove('hidden');
-        //     // Delete self
-        //     generateQuestionButton.remove();
-        // })
-        // questionElement.insertAdjacentElement('afterbegin', generateQuestionButton);
-
-
+       
         //After this, the game should run itself with events.
 
         // Add handler for test next player. REmvoe in production
@@ -130,16 +112,29 @@ export class Board {
             this.round++
             this.currentPlayer = 0
         }
+        this.updateScores();
         this.stagePlayer(this.currentPlayer);
         this.resetPlayArea();
     }
+
+    updateScores() {
+        for(let index = 0; index < this.players.length; index++) {
+            console.log(`#p${index}badge`);
+            let marker = document.querySelector(`#p${index}badge .score-badge`);
+            console.log(marker);
+            marker.textContent = this.currentScores[index];
+        }
+    }
+
     resetPlayArea() {
         this.populateCategories(this.categories);
         
-        //Set up "load question" button
+        // Get the pieces
         const questionElement = document.querySelector('#question');
         const generateQuestionButton = document.createElement('input');
         const questionText = document.querySelector('#question_text');
+
+        // Configure generate question button
         generateQuestionButton.value = "Generate Question";
         generateQuestionButton.type = 'button';
         generateQuestionButton.id = 'generateQuestion';
@@ -194,9 +189,9 @@ export class Board {
         for(let playerIndex = 1; playerIndex < this.players.length; playerIndex++) {
             let from = playersListElement.children[playerIndex];
             let to = playersListElement.children[playerIndex-1]; // shift it up
-            this.flyToElement(from, to);
+            flyToElement(from, to);
         }
-        this.flyToElement(playersListElement.firstElementChild, playersListElement.lastElementChild, 1.2).onfinish = () => {
+        flyToElement(playersListElement.firstElementChild, playersListElement.lastElementChild, 1.2).onfinish = () => {
             //shift all divs up one.
             let newLast = playersListElement.children[0];
             playersListElement.removeChild(newLast);
@@ -211,11 +206,12 @@ export class Board {
     showPlayerSelect() {
         // Get the components
         /** @type { HTMLTemplateElement} */
-        const modalTemplate = document.querySelector('#playerSelectModal');
+        // const modalTemplate = document.querySelector('#playerSelectModal');
         const playerPaneTemplate = document.querySelector('#player-pane');
         
         /** @type {HTMLElement} */
-        const newModal = modalTemplate.content.cloneNode(true).childNodes[1];
+        const newModal = getTemplateInstance('playerSelectModal');
+        // const newModal = modalTemplate.content.cloneNode(true).childNodes[1];
         
         const playerList = newModal.querySelector('#playerList');
         //this.addPlayerSelectPane(playerList);
@@ -355,69 +351,30 @@ export class Board {
         }
     }
 
-    async answerButtonHandler(index) {
-        console.log(`You pushed button ${index} with a value of ${this.answers[index]}`);
-        if(this.answers[index] == this.correct) {
-            console.log(`CORRECT!`);
+    async answerButtonHandler(answerIndex) {
+        console.log(`You pushed button ${answerIndex} with a value of ${this.answers[answerIndex]}`);
+        if(this.answers[answerIndex] == this.correct) {
+            // console.log(`CORRECT!`);
+            const correctModal = getTemplateInstance('correctMessage');
+            correctModal.querySelector('#okButton').addEventListener('click', () => {
+                correctModal.remove();
+            })
+            document.querySelector('body').insertAdjacentElement('afterbegin', correctModal);
+            
+            this.currentScores[this.currentPlayer] += 1;
+            // Display message 
         }
+        else {
+            // Display wrong answer message
+            const incorrectModal = getTemplateInstance('incorrectMessage')
+            incorrectModal.querySelector('#okButton').addEventListener('click', () => {
+                incorrectModal.remove();
+            })
+            document.querySelector('body').insertAdjacentElement('afterbegin', incorrectModal);
+
+        }
+        //this.resetPlayArea();
+        this.nextPlayer();
     }
-
-    /**
-     * Animate an element flying to another location
-     * @param {HTMLElement} element 
-     * @param {number} tx
-     * @param {number} ty
-     * @returns {Animation}
-     */
-    flyTo(element, tx, ty, scale = 1) {
-        let ox = element.getBoundingClientRect().x;
-        let oy = element.getBoundingClientRect().y;
-
-        let dx = tx - ox; //Delta x,y
-        let dy = ty - oy;
-
-        return element.animate(
-            [
-                {
-                    transform: `translate(0px, 0px) scale(1)`
-                },
-                {
-                    transform: `translate(0px, 0px) scale(${scale})`,
-                    boxShadow: '0 5px 15px #0005',
-                    zIndex: `${scale * 10}`,
-                    borderRadius: '1rem'
-                },
-                {
-                    transform: `translate(${dx}px, ${dy}px) scale(${scale})`,
-                    boxShadow: '0 5px 15px #0005',
-                    zIndex: `${scale * 10}`,
-                    borderRadius: '1rem'
-                },
-                {
-                    transform: `translate(${dx}px, ${dy}px) scale(1)`,
-                    borderRadius: '1rem'
-                }
-            ],
-            {
-                duration: 1000,
-                easing: 'ease-in-out'
-            } 
-        )
-    }
-
-    /**
-     * Animate an element flying to another element
-     * @param {HTMLElement} element 
-     * @param {HTMLElement} targetElement
-     * @returns {Animation}
-     */
-    flyToElement(element, targetElement, scale=1) {
-        let tx = targetElement.getBoundingClientRect().x
-        let ty = targetElement.getBoundingClientRect().y
-
-        return this.flyTo(element, tx, ty, scale);
-    }
-    
-    
 }
 

@@ -86,6 +86,11 @@ main {
 .hidden {
     display: none;
 }
+.light-text {
+    color: var(--secondary);
+    font-size: 1.1rem;
+}
+
 
 /* Layout */
 #players {
@@ -129,6 +134,7 @@ main {
     transition: border-radius 1s;
 }
 #board {
+    position: relative;
     grid-column: 2/3;
     display: grid;
     grid-template-rows: min-content min-content min-content 1fr;
@@ -148,6 +154,33 @@ main {
     font-size: 15pt;
     font-weight: bold;
     text-shadow: 0 0 10px rgb(255, 255, 255), 0 1px 1px rgb(255, 255, 255);
+}
+#roundIndicator {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: flex;
+    flex-direction: row;
+    width: 10rem;
+    font-size: 1.4rem;
+
+    /* text-shadow: 0 2px 3px black; */
+}
+#roundIndicator h3 {
+        transform: rotate(-4deg);
+}
+#currentRound {
+    display: flex;
+    box-sizing: border-box;
+    border: 2px solid rgba(0, 0, 0, 0.276);
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    /* padding: 1rem; */
+    width: 2em;
+    height: 2em;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
 }
 #question_config {
     display: flex;
@@ -209,6 +242,20 @@ main {
 }
 .full-button:disabled {
     color: rgba(255, 255, 255, 0.294);
+}
+.modal-box {
+    background-color: var(--background2);
+    background-image: linear-gradient(var(--background2), var(--background1));
+    width: 50vw;
+    height: 50vh;
+    margin: 0;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.427);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
 }
 
 
