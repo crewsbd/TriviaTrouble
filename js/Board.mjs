@@ -14,9 +14,9 @@ export class Board {
     constructor(gameState, gameData) {
         // Universal
         this.scoreMap = {
-            'Easy X1': 1,
-            'Medium X2': 2,
-            'Hard X3': 3
+            'easy': 1,
+            'medium': 2,
+            'hard': 3
         }
 
         // Async stuff
@@ -33,6 +33,7 @@ export class Board {
             this.currentPlayer = gameState.currentPlayer;
             this.answers = gameState.currentQuestions;
             this.correct = gameState.correct;
+            this.difficulty = gameState.difficulty;
             this.correctIndex = gameState.correctIndex;
             this.questionValue = gameState.questionValue;
             this.gameData.saveGameState(this);
@@ -49,6 +50,7 @@ export class Board {
             this.currentScores = [];
             this.answers = [];
             this.correct = "";
+            this.difficulty = 'easy'
             this.correctIndex = 0;
             this.questionValue = 1;
             this.gameOver = false;
@@ -94,7 +96,6 @@ export class Board {
             newImg.height = 40;
             let scoreBadge = document.createElement('div');
             scoreBadge.classList.add('score-badge')
-            //this.currentScores[index] = 0;
             scoreBadge.innerHTML = this.currentScores[index];
 
             newPlayer.insertAdjacentElement('afterbegin', newImg);
@@ -392,6 +393,7 @@ export class Board {
     async populateCategories(categories) {
 
         const categoriesElement = document.getElementById('categories');
+        categoriesElement.innerHTML = "";
         for(let category of categories.trivia_categories) {
             let optionElement = document.createElement('option');
             optionElement.innerText = category.name;
@@ -406,9 +408,7 @@ export class Board {
      */
     async populateQuestion(question) {
 
-
         const questionElement = document.getElementById('question');
-        
         const text = questionElement.querySelector('#question_text');
 
         text.innerHTML = question.results[0].question;
@@ -417,6 +417,7 @@ export class Board {
         this.answers = question.results[0].incorrect_answers;
         this.correct = question.results[0].correct_answer;
         this.correctIndex = Math.floor(Math.random() * 3);
+        this.difficulty = question.results[0].difficulty;
 
 
         this.answers.splice(this.correctIndex, 0, this.correct);
@@ -438,12 +439,15 @@ export class Board {
 
             const correctModal = getTemplateInstance('correctMessage');
             correctModal.querySelector('#winnerName').innerHTML = this.players[this.currentPlayer].name;
-            correctModal.querySelector('#scoredPoints').innerHTML = this.questionValue;
+            correctModal.querySelector('#scoredPoints').innerHTML = this.scoreMap[this.difficulty];
             correctModal.querySelector('#okButton').addEventListener('click', () => {
                 correctModal.remove();
             })
             document.querySelector('body').insertAdjacentElement('afterbegin', correctModal);
-            this.currentScores[this.currentPlayer] += this.questionValue;
+            
+
+            // this.currentScores[this.currentPlayer] += this.questionValue;
+            this.currentScores[this.currentPlayer] += this.scoreMap[this.difficulty];
         }
         // Display an answer for incorrect answers
         else {
@@ -459,7 +463,7 @@ export class Board {
         this.nextPlayer();
     }
     async createHighScoreElement() {
-        
+
     }
 }
 
