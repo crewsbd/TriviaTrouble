@@ -69,6 +69,10 @@ export class GameData {
     );
   }
 
+  /**
+   * 
+   * @returns {Array<Player>}
+   */
   async getPlayers() {
     /** @type {string} */
     const players = localStorage.getItem("players");

@@ -130,9 +130,12 @@ export class Board {
     clearPlayers() {
         for(let index = 0; index < this.players.length; index++) {
             document.querySelector(`#p${index}badge`).remove();
+
             
         }
+        this.currentScores = [];
         this.players = [];
+        this.currentPlayer = 0;
     }
 
     nextPlayer() {
@@ -239,16 +242,29 @@ export class Board {
         }
     }
 
-
-    showPlayerSelect() {
+    async showPlayerSelect() {
         // Get the components
         /** @type { HTMLTemplateElement} */
-        // const modalTemplate = document.querySelector('#playerSelectModal');
         const playerPaneTemplate = document.querySelector('#player-pane');
         
         /** @type {HTMLElement} */
         const newModal = getTemplateInstance('playerSelectModal');
-        // const newModal = modalTemplate.content.cloneNode(true).childNodes[1];
+
+        // Add the player dropdown items
+        const playerDataList = newModal.querySelector('#player-names');
+
+        /** @type {Array<Player>} */
+        const savedPlayers = await this.gameData.getPlayers();
+
+        for(let savedPlayer of savedPlayers) {
+            console.log(savedPlayer.name);
+            /** @type {HTMLOptionElement} */
+            let newOption = document.createElement('option');
+            console.log(newOption);
+            newOption.innerHTML = savedPlayer.name;
+            newOption.value = savedPlayer.name;
+            playerDataList.insertAdjacentElement('beforeend', newOption);
+        }
         
         const playerList = newModal.querySelector('#playerList');
         //this.addPlayerSelectPane(playerList);
@@ -271,6 +287,7 @@ export class Board {
         newModal.querySelector('#playButton').addEventListener('click', () => {
             console.log("---PLAY---")
             newModal.remove();
+            this.round = 1;
             this.runGame();
         })
         

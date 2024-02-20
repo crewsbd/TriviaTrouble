@@ -53,6 +53,9 @@
             <div id="innerModal" class="modal">
                 <h2>PLAYER SELECT</h2>
                 <div id="playerList">
+                    <datalist id="player-names">
+                        <!-- ADD OPTION ELEMENTS -->
+                    </datalist>
                 <!-- ADD DIVs OF CLASS player-select-pane HERE -->
                 </div>
                 <input id="addPlayerButton" class="full-button" type="button" value="+">
@@ -63,9 +66,7 @@
     <template id="player-pane">
         <div class="player-select-pane">
             <input id="name-input" type="text" list="player-names" placeholder="Name" >
-            <datalist id="player-names">
-                <!-- ADD OPTION ELEMENTS -->
-            </datalist>
+            
             <div id="color-select" class="select">
                 <div class="select-selected" onclick="clickSelect(this)">
                     <div id="select-text"><div class="swatch" style="background-color: red;">RED</div></div>
