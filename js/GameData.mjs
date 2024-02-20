@@ -38,10 +38,11 @@ export class GameData {
       queryURL = 'json/test-question.json';
     }
     else {
-      queryURL = `${this.apiURL}/api.php?category=${category}&difficulty=${difficulty}&amount=1&type=multiple`;
+      queryURL = `${this.apiURL}/api.php?category=${category}&difficulty=${difficulty}&amount=1&type=multiple&token=${this.token}`;
     }
 
     const result = await fetch(queryURL);
+    console.log(result);
     const data = await result.json();
 
     return data;
@@ -153,14 +154,13 @@ export class GameData {
 
   async _init() {
 
-    if (!this._tokenValid()) {
-      this._getNewToken();
-    }
+    this._getNewToken();
   }
 
   _getToken() {
     if (!this._tokenValid()) {
-      getNewToken();
+      console.log(INVALID);
+      this._getNewToken();
     }
     return this.token;
   }

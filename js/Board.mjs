@@ -458,5 +458,8 @@ export class Board {
         //this.resetPlayArea();
         this.nextPlayer();
     }
+    async createHighScoreElement() {
+        
+    }
 }
 
