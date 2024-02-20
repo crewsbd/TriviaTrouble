@@ -34,14 +34,13 @@ export class GameData {
    */
   async getQuestion(difficulty, category) {
     let queryURL = '';
-    console.log(await this.getSetting('dev'));
     if(await this.getSetting('dev')) {
       queryURL = 'json/test-question.json';
     }
     else {
       queryURL = `${this.apiURL}/api.php?category=${category}&difficulty=${difficulty}&amount=1&type=multiple`;
     }
-    //console.log(queryURL);
+
     const result = await fetch(queryURL);
     const data = await result.json();
 
@@ -49,7 +48,7 @@ export class GameData {
   }
   async getCategories() {
     let queryURL = '';
-    console.log(await this.getSetting('dev'));
+
     if(await this.getSetting('dev')) {
       queryURL = 'json/test-categories.json';
     }
@@ -57,9 +56,9 @@ export class GameData {
       queryURL = `${this.apiURL}/api_category.php`;
     }
     const result = await fetch(queryURL);
-    // console.log(result);
+
     const data = await result.json();
-    // console.log(data);
+
     return data;
   }
 
@@ -82,7 +81,7 @@ export class GameData {
       return playerArray.map((player) => new Player(player));
       //return playerArray; // Returns
     } else {
-      localStorage.setItem("players", []);
+      //localStorage.setItem("players", []);
       return [];
     }
   }
@@ -106,7 +105,8 @@ export class GameData {
     } else {
       players.push(player);
     }
-    console.log(players);
+
+    
     localStorage.setItem("players", JSON.stringify(players));
   }
 
@@ -135,15 +135,15 @@ export class GameData {
   }
 
   async getSetting(key) {
-    console.log('GET SETTING');
+
     const settings = await fetch('json/settings.json');
-    console.log(settings);
+
     if(settings.ok) {
       const json = await settings.json();
-      console.log(json);
+
       if(key in json) {
-        console.log('Key is present');
-        console.log(json[key]);
+
+
         return json[key];
       }
     }
@@ -152,7 +152,7 @@ export class GameData {
 
 
   async _init() {
-    console.log("init");
+
     if (!this._tokenValid()) {
       this._getNewToken();
     }
@@ -187,7 +187,7 @@ export class GameData {
       const tokenDate = new Date(token);
       const todayDate = new Date();
       const expireDate = new Date(todayDate.getTime() + this._hour(6));
-      //console.log(`${tokenDate}\n${todayDate}\n${expireDate}`);
+
       if (expireDate > tokenDate) {
         return true;
       }

@@ -15,7 +15,7 @@ export function decodeEntities(htmlString) {
  */
 export function clickSelect(clickedElement) {
     clickedElement.parentElement.classList.toggle('clicked');
-    console.log(`Clicked ${clickedElement.innerText}`);
+
     // selectElement.classList.toggle('clicked')  // Display the select box
 }
 
@@ -25,12 +25,12 @@ export function clickSelect(clickedElement) {
  * @param {string} value 
  */
 export function clickOption(optionElement, value) {
-    console.log(optionElement);
+
     const selectElement = optionElement.parentElement.parentElement;
-    console.log(selectElement);
+
     selectElement.dataset.value = value; // Can't remember why I wanted this
     const clickableElement = selectElement.querySelector('.select-selected');
-    console.log(optionElement.innerHTML);
+
 
     clickableElement.querySelector('#select-text').innerHTML = optionElement.innerHTML;
     //clickableElement.innerHTML = value; // Put the new selection in
