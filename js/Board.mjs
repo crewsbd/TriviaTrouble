@@ -12,54 +12,56 @@ export class Board {
      * @param {GameData} gameData 
      */
     constructor(gameState, gameData) {
-      this._init(gameData).then(() => { // Async hurts my head
-        if (gameState) {
-          // A game state has been passed, load it
-          this.gameData = gameData;
-          /**@type {Array<Player>} */
-          this.players = gameState.players;
-          this.currentScores = gameState.currentScores;
-          this.round = gameState.round;
-          this.maxRounds = gameState.maxRounds;
-          this.currentPlayer = gameState.currentPlayer;
-          this.answers = gameState.currentQuestions;
-          this.correct = gameState.correct;
-          this.correctIndex = gameState.correctIndex;
-          this.questionValue = gameState.questionValue;
-          this.categories = gameState.categories;
-          this.gameData.saveGameState(this);
-          this.gameOver = gameState.gameOver;
-          this.runGame();
-        } else {
-          // Open the new game modal to start a new game
-          this.gameData = gameData;
-          /**@type {Array<Player>} */
-          this.players = [];
-          this.round = 1;
-          this.maxRounds = 5;
-          this.currentPlayer = 0;
-          this.currentScores = [];
-          this.answers = [];
-          this.correct = "";
-          this.correctIndex = 0;
-          this.questionValue = 1;
-          this.categories = [];
-          this.gameOver = false;
-          // this.gameData.saveGameState(this);
-          this.showPlayerSelect();
+        // Universal
+        this.scoreMap = {
+            'Easy X1': 1,
+            'Medium X2': 2,
+            'Hard X3': 3
         }
-      });
+
+        // Async stuff
+        this._init(gameData).then(() => {
+          // Async hurts my head. Wait for the async stuff then do this.
+          if (gameState) {
+            // A game state has been passed, load it
+            this.gameData = gameData;
+            /**@type {Array<Player>} */
+            this.players = gameState.players;
+            this.currentScores = gameState.currentScores;
+            this.round = gameState.round;
+            this.maxRounds = gameState.maxRounds;
+            this.currentPlayer = gameState.currentPlayer;
+            this.answers = gameState.currentQuestions;
+            this.correct = gameState.correct;
+            this.correctIndex = gameState.correctIndex;
+            this.questionValue = gameState.questionValue;
+            this.gameData.saveGameState(this);
+            this.gameOver = gameState.gameOver;
+            this.runGame();
+          } else {
+            // Open the new game modal to start a new game
+            this.gameData = gameData;
+            /**@type {Array<Player>} */
+            this.players = [];
+            this.round = 1;
+            this.maxRounds = 5;
+            this.currentPlayer = 0;
+            this.currentScores = [];
+            this.answers = [];
+            this.correct = "";
+            this.correctIndex = 0;
+            this.questionValue = 1;
+            this.gameOver = false;
+            // this.gameData.saveGameState(this);
+            this.showPlayerSelect();
+          }
+        });
     }
     /**
      * Async constructor stuff
      * @param {GameData} gameData
      */
     async _init(gameData) {
-        this.scoreMap = {
-            'Easy X1': 1,
-            'Medium X2': 2,
-            'Hard X3': 3
-    }
         this.categories = await gameData.getCategories();
         this.savedPlayers = await gameData.getPlayers();
 
@@ -76,7 +78,10 @@ export class Board {
             
             const savedPlayer = this.savedPlayers.find((current) => this.players[index].name == current.name);
 
-            this.players[index].highScore = savedPlayer.highScore;
+            //  Put transfer the saved high score to the active copy, if it exists.
+            if(savedPlayer) {
+                this.players[index].highScore = savedPlayer.highScore;
+            }
             await this.gameData.savePlayer(this.players[index]);
             
             let newPlayer = document.createElement('div');
@@ -100,11 +105,6 @@ export class Board {
         // Stage the first player.
         this.stagePlayer(this.currentPlayer);
 
-        //Load categories
-        // this.populateCategories(this.gameData.getCategories);
-        
-        this.populateCategories(this.categories);
-        
         //Set up "load question" button
         this.resetPlayArea();
 
@@ -167,6 +167,7 @@ export class Board {
     }
 
     resetPlayArea() {
+        console.log(this.categories);
         this.populateCategories(this.categories);
         
         // Get the pieces

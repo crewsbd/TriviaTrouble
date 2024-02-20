@@ -176,7 +176,7 @@ export class GameData {
     this.token = json.token;
     localStorage.setItem("token", this.token);
     const expires = new Date() + this._hour(6);
-    console.log(expires);
+
 
     this._updateTokenExpiration();
   }
