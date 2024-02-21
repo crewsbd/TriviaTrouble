@@ -142,7 +142,12 @@ main {
 #players div:nth-child(1) {
     border-radius: 1rem 0 0 1rem;
     transition: border-radius 1s;
+    
 }
+#players div:nth-child(1) img {
+    animation: wave .4s infinite alternate ease-in-out;
+}
+
 #board {
     position: relative;
     grid-column: 2/3;
@@ -283,6 +288,31 @@ main {
     flex-direction: column;
     gap: .5rem;
 }
+
+/* High Scores */
+#highScores {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.137);
+    margin-top: 1rem;
+}
+#highScores img {
+    width: 30px;
+}
+#highScores tr > * {
+    padding: 0;
+    box-sizing: border-box;
+}
+#highScores tr td:nth-child(1) {
+    width: 30px;
+}
+#highScores tr td:nth-child(2) {
+    width: auto;
+    padding-left: 1rem;
+}
+#highScores tr td:nth-child(3) {
+    width: 2rem;
+}
+
 
 
 
